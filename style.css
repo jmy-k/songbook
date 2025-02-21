@@ -1,3 +1,19 @@
+* {
+    cursor: pointer;
+}
+
+#rightSide {
+    width: 50%;
+    height: 100%;
+    left: 70%;
+    position: absolute;
+    top: 0;
+}
+
+#rightSide:hover {
+    color: red;
+}
+
 .marquee {
     height: max-content;
     width: 50%;
