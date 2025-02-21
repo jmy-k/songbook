@@ -1,0 +1,67 @@
+.marquee {
+    height: max-content;
+    width: 50%;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    top: 5vh;
+
+    word-break: break-all;
+    font-size: 1.5rem;
+    color: #bbd0ff;
+    /* border: 1px solid #4a4a4a; */
+
+
+    animation-name: scroll-left;
+    animation-duration: 40s;
+    animation-direction: linear;
+    animation-iteration-count: infinite;
+    animation-delay: -12s;
+
+    opacity: 0;
+
+}
+
+
+@keyframes scroll-left {
+    0% {
+
+        transform: translateX(-100%);
+    }
+
+
+    100% {
+
+        transform: translateX(200%);
+    }
+}
+
+.link {
+    opacity: 0;
+    font-size: xx-large;
+    position: absolute;
+}
+
+#picture {
+    display: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15vh;
+    width: max-content;
+    height: max-content;
+}
+
+#magritte {
+    height: 60vh;
+    width: auto;
+}
+
+#moon {
+    left: 48.5%;
+    margin-top: 4%;
+}
+
+#shadow {
+    left: 54.5%;
+    margin-top: 45.5vh;
+}
