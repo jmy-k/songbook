@@ -1,17 +1,14 @@
 * {
     font-family: Arial, Helvetica, sans-serif;
-
 }
 
 body {
-    /* background-image: url(./src/background.jpg);
-    background-size: 110%; */
     background-color: #474056;
     overflow-y: scroll;
     overflow-x: hidden;
-    /* height: 1200px; */
 }
 
+/* Background Circle */
 #big {
     opacity: 0.8;
     z-index: -10;
@@ -23,26 +20,30 @@ body {
     width: 2000px;
 }
 
-.line1 {
+/* Responsive Text Lines */
+.line1,
+.line2 {
     z-index: -6;
     position: absolute;
-    color: #B1CF5F;
-    /* color: lightblue; */
-    /* background-color: lightblue; */
-    /* background-color: pink; */
     text-shadow: 1px 3px 1px white;
     width: 200px;
-    font-size: 0.1f;
+    font-size: 1.2rem;
     text-align: right;
     padding-right: 20px;
-    /* border: 6px dotted orange;
-    border-radius: 100px; */
 }
 
+.line1 {
+    color: #B1CF5F;
+}
+
+.line2 {
+    color: #333333;
+}
+
+/* Responsive Element Positions */
 #shadow {
     left: 20vw;
     top: 20vh;
-
 }
 
 #smile {
@@ -54,22 +55,6 @@ body {
     top: 1700px;
 }
 
-.line2 {
-    z-index: -4;
-    position: absolute;
-    color: #333333;
-    /* color: lightblue; */
-    /* background-color: lightblue; */
-    /* background-color: pink; */
-    text-shadow: 1px 3px 1px white;
-    width: 200px;
-    font-size: 0.1f;
-    text-align: right;
-    padding-right: 20px;
-    /* border: 6px dotted orange;
-    border-radius: 100px; */
-}
-
 #tear {
     transform: rotate(90deg);
     top: 100px;
@@ -78,7 +63,8 @@ body {
 
 #lips {
     top: 600px;
-    left: 630px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #and {
@@ -86,6 +72,7 @@ body {
     right: 50px;
 }
 
+/* Circles Layout */
 .circlesContainer {
     display: flex;
     flex-direction: column;
@@ -107,7 +94,7 @@ body {
     justify-content: space-between;
 }
 
-
+/* Abstract Blobs */
 .blobs {
     position: absolute;
     opacity: .6;
@@ -125,7 +112,6 @@ body {
     width: 700px;
     top: 1000px;
     left: 10vw;
-
 }
 
 #blob3 {
@@ -143,24 +129,25 @@ body {
     left: 10vw;
 }
 
+/* Framed Effect */
 .framed {
     --s: 10px;
-    /* control the size */
     padding: var(--s);
     border: calc(2*var(--s)) solid #0000;
     outline: 1px solid #000;
     outline-offset: calc(-1*var(--s));
     background: conic-gradient(from 90deg at 1px 1px, #0000 25%, #000 0);
-
 }
 
+/* Positioned Elements */
 #drop {
     position: absolute;
     opacity: 0.8;
-    left: 600px;
-    top: 600px;
+    left: 45vw;
+    top: 80vh;
 }
 
+/* Video */
 video {
     position: absolute;
     opacity: 0.8;
@@ -168,27 +155,111 @@ video {
     width: 200px;
     right: 5vw;
     z-index: 10;
-
 }
 
+/* Water Element */
 #water {
     position: absolute;
     top: 2200px;
     left: 300px;
-
-    border-top-left-radius: 50%;
-    border-top-right-radius: 50%;
-    border-bottom-left-radius: 15%;
-    border-bottom-right-radius: 15%;
-
+    border-radius: 50% 50% 15% 15%;
     opacity: 0.7;
-    filter: drop-shadow(0 0 20px white)
+    filter: drop-shadow(0 0 20px white);
 }
 
+/* Space Section */
 #space {
     position: absolute;
     top: 2400px;
-    left: auto;
     width: 100%;
     height: 200px;
+}
+
+/* 🌟 Responsive Adjustments */
+@media (max-width: 1024px) {
+    #big {
+        height: 1500px;
+        width: 1500px;
+    }
+
+    .line1,
+    .line2 {
+        font-size: 1rem;
+        width: 150px;
+    }
+
+    #smile,
+    #shadow,
+    #gone {
+        top: auto;
+        position: relative;
+    }
+
+    video {
+        width: 150px;
+        top: 1400px;
+    }
+}
+
+@media (max-width: 768px) {
+    #big {
+        height: 1200px;
+        width: 1200px;
+    }
+
+    .line1,
+    .line2 {
+        font-size: 0.9rem;
+        width: 120px;
+    }
+
+    #blob1,
+    #blob2,
+    #blob3,
+    #blob4 {
+        min-height: 500px;
+        width: 500px;
+    }
+
+    video {
+        width: 120px;
+        top: 1300px;
+    }
+
+    #water {
+        top: 2000px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 480px) {
+    #big {
+        height: 900px;
+        width: 900px;
+    }
+
+    .line1,
+    .line2 {
+        font-size: 0.8rem;
+        width: 100px;
+        text-align: center;
+    }
+
+    #blob1,
+    #blob2,
+    #blob3,
+    #blob4 {
+        min-height: 400px;
+        width: 400px;
+    }
+
+    video {
+        width: 100px;
+        top: 1200px;
+    }
+
+    #water {
+        top: 1900px;
+    }
 }

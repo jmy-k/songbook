@@ -15,9 +15,9 @@ moonText.textContent = "One, two  Moon river, wider than a mile  I'm crossing yo
 let backgroundColors = ["#22223b", "#4a4e69", "#403d39", "#454545", "#051923", "#1b2021"]
 
 
-rightSide.addEventListener('mouseclick', () => {
+// rightSide.addEventListener('mouseclick', () => {
 
-})
+// })
 
 
 moon.addEventListener('mouseenter', () => {
