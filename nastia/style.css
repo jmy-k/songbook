@@ -1,0 +1,153 @@
+#gridcontainer {
+    width: fit-content;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.row {
+    display: flex;
+}
+
+.grid {
+    min-width: 115px;
+    min-height: 101px;
+    max-width: fit-content;
+}
+
+#grid1 {
+    background-image: url("./src/hello1.png");
+}
+
+#grid2 {
+    background-image: url("./src/hello2.png");
+}
+
+#grid3 {
+    background-image: url("./src/hello3.png");
+}
+
+#grid4 {
+    background-image: url("./src/hello4.png");
+}
+
+#grid5 {
+    background-image: url("./src/hello5.png");
+}
+
+#grid6 {
+    background-image: url("./src/hello6.png");
+}
+
+#grid7 {
+    background-image: url("./src/hello7.png");
+}
+
+#grid8 {
+    background-image: url("./src/hello8.png");
+}
+
+#grid9 {
+    background-image: url("./src/hello9.png");
+}
+
+#grid10 {
+    background-image: url("./src/hello10.png");
+}
+
+#grid11 {
+    background-image: url("./src/hello11.png");
+}
+
+#grid12 {
+    background-image: url("./src/hello12.png");
+}
+
+#grid13 {
+    background-image: url("./src/hello13.png");
+}
+
+#grid14 {
+    background-image: url("./src/hello14.png");
+}
+
+#grid15 {
+    background-image: url("./src/hello15.png");
+
+}
+
+#grid16 {
+    background-image: url("./src/hello16.png");
+
+}
+
+#grid17 {
+    background-image: url("./src/hello17.png");
+
+}
+
+#grid18 {
+    background-image: url("./src/hello18.png");
+
+}
+
+#grid19 {
+    background-image: url("./src/hello19.png");
+
+}
+
+#grid20 {
+    background-image: url("./src/hello20.png");
+}
+
+#grid21 {
+    background-image: url("./src/hello21.png");
+}
+
+#grid22 {
+    background-image: url("./src/hello22.png");
+
+}
+
+#grid23 {
+    background-image: url("./src/hello23.png");
+
+}
+
+#grid24 {
+    background-image: url("./src/hello24.png");
+
+}
+
+#grid25 {
+    background-image: url("./src/hello25.png");
+
+}
+
+#grid26 {
+    background-image: url("./src/hello26.png");
+
+}
+
+#grid27 {
+    background-image: url("./src/hello27.png");
+
+}
+
+#grid28 {
+    background-image: url("./src/hello28.png");
+
+}
+
+#grid29 {
+    background-image: url("./src/hello29.png");
+
+}
+
+#grid30 {
+    background-image: url("./src/hello30.png");
+}
