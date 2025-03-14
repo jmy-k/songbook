@@ -1,64 +1,49 @@
 let boxes = document.querySelectorAll(".resize");
 
 let lastScrollTop = window.scrollY;
-let isEmptyMode = false; // whether images should be hidden
+let isEmptyMode = false; // scroll up or down -> images should be hidden
 
 const folders = ["abstract", "sculpture", "contemporary", "photos"]; // img folders
-let currentIndex = 0; // start with abstract images
+let currentIndex = 0;
 
-let preloadedImages = {}; // Object to store preloaded images
+let preloadedImages = {};
 
-// Preload images for each folder
+let scrollCounter = 0; // number of scrolls
+let lowerLevelActive = false;
+
+// preload
 function preloadImages() {
     folders.forEach(folder => {
         preloadedImages[folder] = [];
-        for (let i = 1; i <= 5; i++) { // Assuming each folder has 5 images
+        for (let i = 1; i <= 5; i++) {
             let img = new Image();
-            let imageUrl = `${folder}/image${i}.jpg`; // Adjust based on your actual image paths
-            img.src = imageUrl;
+            img.src = `${folder}/image${i}.jpg`;
             preloadedImages[folder].push(img);
         }
     });
 }
 
-// Run preload when DOM loads
-document.addEventListener("DOMContentLoaded", () => {
-    preloadImages();
-    updateBackgrounds(); // Apply preloaded images
-
-    // Change folder every 10 seconds
-    setInterval(checkScrollState, 10000);
-});
-
+// background images to boxes
 function updateBackgrounds() {
     let folder = folders[currentIndex];
 
-    // Clear divs before applying new images
-    boxes.forEach(box => {
-        box.style.background = "rgba(170, 170, 170, 0.6)";
-    });
+    // empty backgrounds
+    boxes.forEach(box => box.style.background = "rgba(170, 170, 170, 0.6)");
 
-    // Shuffle box array
-    let boxesArray = Array.from(boxes);
-    for (let i = boxesArray.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [boxesArray[i], boxesArray[j]] = [boxesArray[j], boxesArray[i]];
-    }
-
-    // Select 5 random divs for images
-    let selectedBoxes = boxesArray.slice(0, 5);
+    // shuffle
+    let selectedBoxes = [...boxes].sort(() => Math.random() - 0.5).slice(0, 5);
     selectedBoxes.forEach((box, index) => {
         let preloadedImage = preloadedImages[folder][index];
-
         if (preloadedImage) {
             box.style.background = `url('${preloadedImage.src}') center/cover no-repeat`;
         }
     });
 
-    // Cycle through folders
+    // cycle through folders
     currentIndex = (currentIndex + 1) % folders.length;
 }
 
+// remove images when scrolling up
 function removeImages() {
     boxes.forEach(box => {
         box.style.transition = "background 0.5s ease, border 0.5s ease";
@@ -67,8 +52,179 @@ function removeImages() {
     });
 }
 
+// restore images when scrolling down
+function restoreImages() {
+    updateBackgrounds();
+}
+
 function checkScrollState() {
-    if (!isEmptyMode) {
-        updateBackgrounds(); // Update images only when scrolling down
+    if (!isEmptyMode && scrollCounter <= 10) {
+        updateBackgrounds();
     }
+}
+
+// random filters on click
+function applyRandomFilter(box) {
+    const filters = ["grayscale(100%)", "sepia(50%)", "blur(3px)", "contrast(200%)"];
+    box.style.filter = filters[Math.floor(Math.random() * filters.length)];
+}
+
+// grid resizing when a box is clicked
+function resizeGrid() {
+    let grid = document.querySelector(".grid-container");
+    let numCols = 6, numRows = 6;
+    grid.style.gridTemplateColumns = `repeat(${numCols}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${numRows}, 1fr)`;
+
+    let usedPositions = new Set();
+
+    boxes.forEach(box => {
+
+        //randomize sizes
+        let colSpan = Math.random() > 0.5 ? 1 : 2;
+        let rowSpan = Math.random() > 0.5 ? 1 : 2;
+        let colStart, rowStart, attempts = 0;
+
+        do {
+            colStart = Math.floor(Math.random() * (numCols - colSpan + 1)) + 1;
+            rowStart = Math.floor(Math.random() * (numRows - rowSpan + 1)) + 1;
+            attempts++;
+        } while (usedPositions.has(`${colStart},${rowStart}`) && attempts < 10);
+
+        usedPositions.add(`${colStart},${rowStart}`);
+        box.style.gridColumn = `${colStart} / span ${colSpan}`;
+        box.style.gridRow = `${rowStart} / span ${rowSpan}`;
+    });
+}
+
+boxes.forEach(box => {
+    box.addEventListener("click", () => {
+        applyRandomFilter(box);
+        resizeGrid();
+    });
+});
+
+window.addEventListener("scroll", () => {
+    let currentScroll = document.documentElement.scrollTop;
+
+    if (!lowerLevelActive) { // only run if lower level mode is not active
+        if (scrollCounter <= 10) {
+            if (currentScroll < lastScrollTop) {
+                isEmptyMode = true;
+                removeImages();
+                console.log(scrollCounter);
+                scrollCounter++;
+            } else if (isEmptyMode) {
+                isEmptyMode = false;
+                restoreImages();
+            }
+        }
+
+        if (scrollCounter > 10) {
+            lowerLevelActive = true; // lower level mode!!!!
+            emptyPage();
+            createLowerLevel();
+        }
+    }
+
+    lastScrollTop = Math.max(0, currentScroll);
+});
+
+// init script
+document.addEventListener("DOMContentLoaded", () => {
+    preloadImages();
+    updateBackgrounds();
+    setInterval(checkScrollState, 10000);
+});
+
+function emptyPage() {
+    document.body.innerHTML = "";
+}
+
+function createLowerLevel() {
+    document.querySelector("body").style.background = "black";
+
+    let gridContainer = document.createElement("div");
+    gridContainer.style.display = "grid";
+    gridContainer.style.gridTemplateColumns = "repeat(5, 1fr)"; // 5 columns
+    gridContainer.style.gridTemplateRows = "repeat(4, 1fr)"; // 4 rows
+    gridContainer.style.gap = "10px";
+    gridContainer.style.width = "100vw";
+    gridContainer.style.height = "100vh";
+    gridContainer.style.padding = "20px";
+    gridContainer.style.position = "relative";
+
+    const folders = ["abstract", "sculpture", "contemporary", "photos"];
+    let imageCaptionPairs = [];
+
+    let captions = [
+        "Helen Frankenthaler, <i>Cool Summer</i>, 1962", "Joan Mitchell, <i>Untitled</i>, 1992", "Willem de Kooning, <i>Landscape, Abstract</i>, 1949", "Gerhard Richter, <i>941-4 Abstraktes Bild</i>, 2015", "Carmen Herrera, <i>Alpes</i>, 2015",
+        "Jeanne-Claude and Christo, <i>Wrapped television (hommage à Nam June Park)</i>, 1967", "Ruth Asawa, <i>Untitled (S.453, Hanging Three-Lobed, Three-Layered Continuous Form within a Form)</i>, 1957-59", "Isa Genzken, <i>Schauspieler</i>, 2013", "Jean-Marie Appriou, <i>The cave of time (mythologique)</i>, 2018", "Roni Horn, <i>Untitled (“Y is for the ambush of youth and escaping it year by year.”)</i>, 2013-17",
+        "Henni Alftan, <i>Sharp</i>, 2016", "Vija Celmins, <i>Untitled [Waves]</i>, 1970", "Erwin Wurm, <i>Fat Convertible</i>, 2005", "Faith Ringgold, <i>Tar Beach</i>, 1988", "Gerhard Richter, <i>Betty</i>, 1988",
+        "Nan Goldin, <i>Misty and Jimmy Paulette in a taxi</i>, NYC, 1991", "Cindy Sherman, <i>Untitled #477</i>, 2008", "Wolfgang Tillmans, <i>Suzanne & Lutz</i>, 1993", "Tyler Mitchell, <i>Treading</i>, 2022", "Robert Mapplethorpe, <i>White Gauze</i>, 1984"
+    ];
+
+    // img-caption pairing
+    folders.forEach((folder, index) => {
+        for (let i = 1; i <= 5; i++) {
+            imageCaptionPairs.push({
+                imagePath: `${folder}/image${i}.jpg`,
+                caption: captions[index * 5 + (i - 1)]
+            });
+        }
+    });
+
+    // shuffle pairs
+    imageCaptionPairs.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < 20; i++) {
+        let { imagePath, caption } = imageCaptionPairs[i % imageCaptionPairs.length];
+
+        let gridItem = document.createElement("div");
+        gridItem.style.background = `url('${imagePath}') center/cover no-repeat`;
+        gridItem.style.width = "100%";
+        gridItem.style.height = "100%";
+        gridItem.style.transition = "transform 0.3s ease";
+        gridItem.style.position = "relative";
+
+        let captionDiv = document.createElement("div");
+        captionDiv.innerHTML = caption;
+        captionDiv.classList.add("imageCaptions");
+        gridItem.appendChild(captionDiv);
+
+        // default right, except for the 5th column aka furthest right
+        let columnIndex = i % 5;
+        captionDiv.style.top = "50%";
+        captionDiv.style.transform = "translateY(-50%) scale(0.95)";
+
+        if (columnIndex === 4) {
+            captionDiv.style.right = "110%";
+        } else {
+            captionDiv.style.left = "110%";
+        }
+
+        gridItem.addEventListener("mouseover", () => {
+            captionDiv.style.opacity = "1";
+            captionDiv.style.visibility = "visible";
+            captionDiv.style.transform = "translateY(-50%) scale(1.05)"; // enlargement
+
+            gridItem.style.transform = "scale(1.05)"; // enlargement
+        });
+
+        gridItem.addEventListener("mouseleave", () => {
+            captionDiv.style.opacity = "0";
+            captionDiv.style.transform = "translateY(-50%) scale(0.95)";
+            setTimeout(() => {
+                captionDiv.style.visibility = "hidden";
+            }, 400);
+
+            gridItem.style.transform = "scale(1)"; // reset size
+        });
+
+        gridItem.classList.add("lowerLevelGridItem");
+        gridContainer.appendChild(gridItem);
+    }
+
+    gridContainer.classList.add("lowerLevelGridContainer");
+    document.body.appendChild(gridContainer);
 }
