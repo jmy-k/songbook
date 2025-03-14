@@ -1,14 +1,14 @@
+let grid = document.querySelector(".grid-container");
 let boxes = document.querySelectorAll(".resize");
 
 let lastScrollTop = window.scrollY;
-let isEmptyMode = false; // scroll up or down -> images should be hidden
+let isEmptyMode = false; // hiding images on scroll up
 
-const folders = ["abstract", "sculpture", "contemporary", "photos"]; // img folders
+const folders = ["abstract", "sculpture", "contemporary", "photos"];
 let currentIndex = 0;
 
 let preloadedImages = {};
-
-let scrollCounter = 0; // number of scrolls
+let scrollCounter = 0;
 let lowerLevelActive = false;
 
 // preload
@@ -23,14 +23,14 @@ function preloadImages() {
     });
 }
 
-// background images to boxes
 function updateBackgrounds() {
+    if (lowerLevelActive) return; // stop updates if in lower level mode
+
     let folder = folders[currentIndex];
 
-    // empty backgrounds
     boxes.forEach(box => box.style.background = "rgba(170, 170, 170, 0.6)");
+    boxes.forEach(box => box.style.border = "none"); // Reset borders 
 
-    // shuffle
     let selectedBoxes = [...boxes].sort(() => Math.random() - 0.5).slice(0, 5);
     selectedBoxes.forEach((box, index) => {
         let preloadedImage = preloadedImages[folder][index];
@@ -39,11 +39,9 @@ function updateBackgrounds() {
         }
     });
 
-    // cycle through folders
     currentIndex = (currentIndex + 1) % folders.length;
 }
 
-// remove images when scrolling up
 function removeImages() {
     boxes.forEach(box => {
         box.style.transition = "background 0.5s ease, border 0.5s ease";
@@ -52,26 +50,81 @@ function removeImages() {
     });
 }
 
-// restore images when scrolling down
 function restoreImages() {
     updateBackgrounds();
 }
 
-function checkScrollState() {
-    if (!isEmptyMode && scrollCounter <= 20) {
-        updateBackgrounds();
+window.addEventListener("scroll", () => {
+    console.log(scrollCounter);
+    let currentScroll = document.documentElement.scrollTop;
+
+    if (!lowerLevelActive) {
+        if (scrollCounter < 20) {
+            if (currentScroll < lastScrollTop) {
+                isEmptyMode = true;
+                removeImages();
+                scrollCounter++;
+            } else if (isEmptyMode) {
+                isEmptyMode = false;
+                restoreImages();
+            }
+        }
+
+        if (scrollCounter >= 20) {
+            enterLowerLevelMode();
+        }
+    } else {
+        if (scrollCounter < 30) {
+            scrollCounter++;
+        } else {
+            exitLowerLevelMode();
+        }
     }
+
+    lastScrollTop = Math.max(0, currentScroll);
+});
+
+function enterLowerLevelMode() {
+    lowerLevelActive = true;
+    scrollCounter = 0;
+    document.body.style.background = "black";
+    grid.style.display = "grid";
+    grid.innerHTML = "";
+    createLowerLevel();
 }
 
-// random filters on click
+function exitLowerLevelMode() {
+    lowerLevelActive = false;
+    scrollCounter = 0;
+    document.body.style.background = "white";
+    grid.innerHTML = "";
+    recreateInitialGrid();
+}
+
+function recreateInitialGrid() {
+    for (let i = 1; i <= 20; i++) {
+        let div = document.createElement("div");
+        div.className = `resize box${i}`;
+        grid.appendChild(div);
+    }
+    boxes = document.querySelectorAll(".resize"); // update node list
+    boxes.forEach(box => {
+        box.addEventListener("click", () => {
+            applyRandomFilter(box);
+            resizeGrid();
+        });
+    });
+
+    updateBackgrounds();
+    resizeGrid();
+}
+
 function applyRandomFilter(box) {
     const filters = ["grayscale(100%)", "sepia(50%)", "blur(3px)", "contrast(200%)"];
     box.style.filter = filters[Math.floor(Math.random() * filters.length)];
 }
 
-// grid resizing when a box is clicked
 function resizeGrid() {
-    let grid = document.querySelector(".grid-container");
     let numCols = 6, numRows = 6;
     grid.style.gridTemplateColumns = `repeat(${numCols}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${numRows}, 1fr)`;
@@ -79,8 +132,6 @@ function resizeGrid() {
     let usedPositions = new Set();
 
     boxes.forEach(box => {
-
-        //randomize sizes
         let colSpan = Math.random() > 0.5 ? 1 : 2;
         let rowSpan = Math.random() > 0.5 ? 1 : 2;
         let colStart, rowStart, attempts = 0;
@@ -97,64 +148,12 @@ function resizeGrid() {
     });
 }
 
-boxes.forEach(box => {
-    box.addEventListener("click", () => {
-        applyRandomFilter(box);
-        resizeGrid();
-    });
-});
-
-window.addEventListener("scroll", () => {
-    let currentScroll = document.documentElement.scrollTop;
-
-    if (!lowerLevelActive) { // only run if lower level mode is not active
-        if (scrollCounter <= 20) {
-            if (currentScroll < lastScrollTop) {
-                isEmptyMode = true;
-                removeImages();
-                console.log(scrollCounter);
-                scrollCounter++;
-            } else if (isEmptyMode) {
-                isEmptyMode = false;
-                restoreImages();
-            }
-        }
-
-        if (scrollCounter > 20) {
-            lowerLevelActive = true; // lower level mode!!!!
-            emptyPage();
-            createLowerLevel();
-        }
-    }
-
-    lastScrollTop = Math.max(0, currentScroll);
-});
-
-// init script
-document.addEventListener("DOMContentLoaded", () => {
-    preloadImages();
-    updateBackgrounds();
-    setInterval(checkScrollState, 10000);
-});
-
-function emptyPage() {
-    document.body.innerHTML = "";
-}
-
 function createLowerLevel() {
-    document.querySelector("body").style.background = "black";
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = "repeat(5, 1fr)";
+    grid.style.gridTemplateRows = "repeat(4, 1fr)";
 
-    let gridContainer = document.createElement("div");
-    gridContainer.style.display = "grid";
-    gridContainer.style.gridTemplateColumns = "repeat(5, 1fr)"; // 5 columns
-    gridContainer.style.gridTemplateRows = "repeat(4, 1fr)"; // 4 rows
-    gridContainer.style.gap = "10px";
-    gridContainer.style.width = "100vw";
-    gridContainer.style.height = "100vh";
-    gridContainer.style.padding = "20px";
-    gridContainer.style.position = "relative";
 
-    const folders = ["abstract", "sculpture", "contemporary", "photos"];
     let imageCaptionPairs = [];
 
     let captions = [
@@ -164,7 +163,6 @@ function createLowerLevel() {
         "Nan Goldin, <i>Misty and Jimmy Paulette in a taxi</i>, NYC, 1991", "Cindy Sherman, <i>Untitled #477</i>, 2008", "Wolfgang Tillmans, <i>Suzanne & Lutz</i>, 1993", "Tyler Mitchell, <i>Treading</i>, 2022", "Robert Mapplethorpe, <i>White Gauze</i>, 1984"
     ];
 
-    // img-caption pairing
     folders.forEach((folder, index) => {
         for (let i = 1; i <= 5; i++) {
             imageCaptionPairs.push({
@@ -174,7 +172,6 @@ function createLowerLevel() {
         }
     });
 
-    // shuffle pairs
     imageCaptionPairs.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < 20; i++) {
@@ -182,17 +179,15 @@ function createLowerLevel() {
 
         let gridItem = document.createElement("div");
         gridItem.style.background = `url('${imagePath}') center/cover no-repeat`;
-        gridItem.style.width = "100%";
-        gridItem.style.height = "100%";
+        gridItem.classList.add("lowerLevelGridItem");
         gridItem.style.transition = "transform 0.3s ease";
-        gridItem.style.position = "relative";
+
 
         let captionDiv = document.createElement("div");
         captionDiv.innerHTML = caption;
         captionDiv.classList.add("imageCaptions");
         gridItem.appendChild(captionDiv);
 
-        // default right, except for the 5th column aka furthest right
         let columnIndex = i % 5;
         captionDiv.style.top = "50%";
         captionDiv.style.transform = "translateY(-50%) scale(0.95)";
@@ -221,10 +216,20 @@ function createLowerLevel() {
             gridItem.style.transform = "scale(1)"; // reset size
         });
 
-        gridItem.classList.add("lowerLevelGridItem");
-        gridContainer.appendChild(gridItem);
+        grid.appendChild(gridItem);
     }
-
-    gridContainer.classList.add("lowerLevelGridContainer");
-    document.body.appendChild(gridContainer);
 }
+
+// Initialize
+document.addEventListener("DOMContentLoaded", () => {
+    preloadImages();
+    boxes.forEach(box => {
+        box.addEventListener("click", () => {
+            applyRandomFilter(box);
+            resizeGrid();
+        });
+    });
+
+    updateBackgrounds();
+    setInterval(updateBackgrounds, 10000);
+});
