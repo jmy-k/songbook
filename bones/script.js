@@ -58,7 +58,7 @@ function restoreImages() {
 }
 
 function checkScrollState() {
-    if (!isEmptyMode && scrollCounter <= 10) {
+    if (!isEmptyMode && scrollCounter <= 20) {
         updateBackgrounds();
     }
 }
@@ -108,7 +108,7 @@ window.addEventListener("scroll", () => {
     let currentScroll = document.documentElement.scrollTop;
 
     if (!lowerLevelActive) { // only run if lower level mode is not active
-        if (scrollCounter <= 10) {
+        if (scrollCounter <= 20) {
             if (currentScroll < lastScrollTop) {
                 isEmptyMode = true;
                 removeImages();
@@ -120,7 +120,7 @@ window.addEventListener("scroll", () => {
             }
         }
 
-        if (scrollCounter > 10) {
+        if (scrollCounter > 20) {
             lowerLevelActive = true; // lower level mode!!!!
             emptyPage();
             createLowerLevel();
