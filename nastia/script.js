@@ -28,4 +28,5 @@ document.querySelectorAll('.grid').forEach(grid => {
         console.log(`Mouseover on ${grid.id}`);
         changeImage(grid);
     });
+
 });

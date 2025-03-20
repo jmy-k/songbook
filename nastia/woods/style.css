@@ -1,0 +1,35 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+
+#background {
+    background-image: url("../src/woods.jpg");
+    background-size: cover;
+    background-position: 50% 75%;
+    width: 100vw;
+    height: 100vh;
+}
+
+#pink {
+    position: absolute;
+    top: 50px;
+    left: 50vw;
+    background-color: #053C5E;
+    width: 100px;
+    height: 140px;
+    border-radius: 50%;
+    box-shadow: #053C5E 0px 0px 10px, #053C5E 0px 0px 25px, #053C5E 0px 0px 50px, #053C5E 0px 0px 75px, #053C5E 0px 0px 100px;
+}
+
+#red {
+    position: relative;
+    top: 25%;
+    left: 25%;
+    background-color: #FCD581;
+    width: 50px;
+    height: 70px;
+    border-radius: 50%;
+    box-shadow: #FCD581 0px 0px 10px, #FCD581 0px 0px 25px, #FCD581 0px 0px 50px, #FCD581 0px 0px 75px, #FCD581 0px 0px 100px;
+}
